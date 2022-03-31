@@ -1,0 +1,71 @@
+f1 score:
+0.840271626808385
+
+Accuracy score:
+0.9740212221002561
+
+Report:
+              precision    recall  f1-score   support
+
+         LOC     0.8202    0.9267    0.8702      1078
+        MISC     0.7623    0.5806    0.6591       453
+         ORG     0.6431    0.7637    0.6983       656
+         PER     0.9610    0.9687    0.9648      1118
+
+   micro avg     0.8204    0.8611    0.8403      3305
+   macro avg     0.7967    0.8099    0.7981      3305
+weighted avg     0.8247    0.8611    0.8392      3305
+f1 score:
+0.8344155844155844
+
+Accuracy score:
+0.9719256228586635
+
+Report:
+              precision    recall  f1-score   support
+
+         LOC     0.8837    0.8878    0.8857      1078
+        MISC     0.7150    0.6755    0.6947       453
+         ORG     0.6024    0.8247    0.6963       656
+         PER     0.9633    0.9150    0.9385      1118
+
+   micro avg     0.8145    0.8554    0.8344      3305
+   macro avg     0.7911    0.8257    0.8038      3305
+weighted avg     0.8317    0.8554    0.8398      3305
+
+f1 score:
+0.8792037400090484
+
+Accuracy score:
+0.9790107441040482
+
+Report:
+              precision    recall  f1-score   support
+
+         LOC     0.8601    0.9406    0.8985      1078
+        MISC     0.7588    0.7572    0.7580       453
+         ORG     0.8388    0.6982    0.7621       656
+         PER     0.9574    0.9839    0.9704      1118
+
+   micro avg     0.8764    0.8820    0.8792      3305
+   macro avg     0.8538    0.8450    0.8473      3305
+weighted avg     0.8749    0.8820    0.8765      3305
+
+f1 score:
+0.8859201441008706
+
+Accuracy score:
+0.9809732894255397
+
+Report:
+              precision    recall  f1-score   support
+
+         LOC     0.8740    0.9462    0.9087      1078
+        MISC     0.7423    0.7947    0.7676       453
+         ORG     0.8302    0.7454    0.7855       656
+         PER     0.9695    0.9678    0.9687      1118
+
+   micro avg     0.8791    0.8929    0.8859      3305
+   macro avg     0.8540    0.8635    0.8576      3305
+weighted avg     0.8796    0.8929    0.8852      3305
+
