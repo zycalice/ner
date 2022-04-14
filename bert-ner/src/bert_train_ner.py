@@ -219,31 +219,23 @@ def train_ner_eval_val(domain, model_name, max_len, epochs, max_grad_norm, batch
             b_first_sub_token_masks = data["first_sub_token_masks"].to(DEVICE)
             b_labels = data["labels"].to(DEVICE)
 
+            # customize the calculation of loss
+            # forward pass but customize the way to calculate loss; # exclude [CLS], [SEP] and X in loss calculation
+            # https://huggingface.co/transformers/v4.12.5/_modules/transformers/modeling_bert.html#BertForTokenClassification.forward
             if first_subtokens_loss:
-                # customize the calculation of loss
-                # forward pass but customize the way to calculate loss; # exclude [CLS], [SEP] and X in loss calculation
-                # https://huggingface.co/transformers/v4.12.5/_modules/transformers/modeling_bert.html#BertForTokenClassification.forward
+                loss_fct = torch.nn.CrossEntropyLoss()
+                # logits include all subtokens
                 logits = model(input_ids=b_input_ids,
                                attention_mask=b_attention_masks,
                                labels=b_labels)[1]
-
-                # second element is logits
-                loss = None
-                if b_labels is not None:
-                    loss_fct = torch.nn.CrossEntropyLoss()
-                    # Only keep active parts of the loss
-                    if b_first_sub_token_masks is not None:
-                        active_loss = b_first_sub_token_masks.view(-1) == 1
-                        # switched attention masks to first sub token masks
-                        active_logits = logits.view(-1, len(unique_labels))
-                        active_labels = torch.where(
-                            active_loss, b_labels.view(-1), torch.tensor(loss_fct.ignore_index).type_as(b_labels)
-                        )
-                        loss = loss_fct(active_logits, active_labels)
-                    else:
-                        loss = loss_fct(logits.view(-1, len(unique_labels)), b_labels.view(-1))
+                # loss include only the non-first subtokens
+                active_loss = b_first_sub_token_masks.view(-1) == 1  # switched attention masks to first sub token masks
+                active_logits = logits.view(-1, len(unique_labels))
+                active_labels = torch.where(
+                    active_loss, b_labels.view(-1), torch.tensor(loss_fct.ignore_index).type_as(b_labels)
+                )
+                loss = loss_fct(active_logits, active_labels)
             else:
-                # include all subtokens labels in loss functions
                 loss = model(input_ids=b_input_ids,
                              attention_mask=b_attention_masks,
                              labels=b_labels)[0]
@@ -312,9 +304,7 @@ def eval_ner(eval_data, trained_model, tokenizer, max_len, unique_labels, batch_
 
         # Get NER predict result
         # take only the actual labels for prediction, exclude [CLS], [SEP] and X
-        logits = torch.argmax(F.log_softmax(logits[:, :, :len(DOMAIN_UNIQUE_LABELS[CURR_DOMAIN])], dim=2),
-                              dim=2)
-
+        logits = torch.argmax(F.log_softmax(logits[:, :, :len(DOMAIN_UNIQUE_LABELS[CURR_DOMAIN])], dim=2), dim=2)
         logits = logits.detach().cpu().numpy()
 
         # Get NER true result
